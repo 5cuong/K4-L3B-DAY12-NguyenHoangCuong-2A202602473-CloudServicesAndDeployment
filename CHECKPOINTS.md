@@ -7,7 +7,7 @@
 - [x] CP2 — 14 test đạt; 2 test cần Docker bị skip bên trong test container. Đã build image Python 3.12 thật (62 MB) và chạy Compose thành công.
 - [x] CP3 — 22/22 test đạt trong Python 3.12.
 - [x] CP4 — 19/19 test đạt trong Python 3.12.
-- [ ] CP5 — service đang phản hồi tại `https://day12-agent.onrender.com`; `/health` 200 và `/ask` thiếu key 401. `/ready` 200 nhưng chưa báo `redis: true`; cần xác nhận Redis, gói Free/billing và bổ sung ảnh dashboard/health.
+- [x] CP5 — Render Free đang chạy tại https://day12-agent-rr5v.onrender.com; /health 200, /ready 200 với redis: true, /ask thiếu key 401, /docs 200. Đã lưu ảnh giao diện, trạng thái và docs trong screenshots/. Ảnh dashboard.png và health.png riêng vẫn cần bổ sung nếu giảng viên yêu cầu đúng tên.
 
 Mỗi checkpoint gồm ba phần: sản phẩm phải hoàn thành, kiến thức học viên phải
 giải thích được và cách tự kiểm tra. Hãy commit sau mỗi checkpoint.

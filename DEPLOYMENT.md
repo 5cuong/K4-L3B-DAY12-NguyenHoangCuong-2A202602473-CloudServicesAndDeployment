@@ -2,99 +2,61 @@
 
 ## Student and repository
 
-| Field | Status |
+| Field | Value |
 |---|---|
-| Name | Verify and enter privately when submitting the assignment |
-| Mã học viên | Do not publish the student ID in this repository; provide it through the course submission channel |
-| Repository | Personal GitHub repository (`origin` is configured locally) |
+| Name | Nguyễn Hoàng Cường |
+| Mã học viên | 2A202602473 |
+| Repository | https://github.com/5cuong/K4-L3B-DAY12-NguyenHoangCuong-2A202602473-CloudServicesAndDeployment |
 
-## Deployment status
+## Deployment
 
-| Field | Status |
+| Field | Value |
 |---|---|
-| Public URL | https://day12-agent.onrender.com |
-| Selected platform | Render; Free plan requested in `render.yaml` (dashboard billing state not verified) |
-| Deployment date | 2026-09-29 (public endpoint checked at 14:45 UTC) |
+| Public URL | https://day12-agent-rr5v.onrender.com |
+| Platform | Render Blueprint; web service and Key Value both on Free plans |
+| Deployed | 2026-09-29, from main commit 7aed726 |
 
-The public endpoint responds. Render dashboard access is unavailable here, so
-the plan and billing state have not been checked. The live `/ready` response
-does not include a `redis` field; verify the Redis binding in Render before
-claiming Redis evidence. Never paste an API key or Redis credential into this
-file.
+The service binds to 0.0.0.0 and reads the platform-provided PORT. The Render dashboard shows the web service as Live and the Key Value instance as Available. Free Key Value has no persistence, so data may reset after restart.
 
-### Zero-cost limits
+## Environment variables
 
-- **Render:** choose Free for both the web service and Key Value. Free web
-  services spin down after 15 minutes idle and can take about a minute to wake.
-  Render grants 750 free instance hours per workspace monthly. Free Key Value
-  has 25 MB and no persistence; data can disappear after a restart. Render can
-  bill outbound bandwidth and build-pipeline overages when a payment method is
-  attached; without one, it disables affected services/builds instead. For the
-  required $0 cap, use a workspace with no payment method attached. If Render
-  requires adding one, stop before creating the Blueprint.
-- Do not approve paid compute or overages. Verify the workspace is on the free
-  Hobby plan before creating the Blueprint; this assignment must stay at $0.
+Only variable names are recorded here; secret values remain in Render.
 
-## Required environment variables
-
-The values below are declared in `render.yaml`; actual dashboard values were
-not inspected in this session.
-
-| Variable | Required source/status |
+| Variable | Source |
 |---|---|
-| `PORT` | Supplied by the hosting platform |
-| `AGENT_API_KEY` | Prompted as a secret by `render.yaml`; dashboard value not verified |
-| `REDIS_URL` | Wired to `day12-redis` Key Value connection string; live connection not confirmed |
-| `RATE_LIMIT_PER_MINUTE` | Declared as `10`; dashboard value not verified |
-| `MONTHLY_BUDGET_USD` | Declared as `10.0`; dashboard value not verified |
-| `LOG_LEVEL` | Declared as `INFO`; dashboard value not verified |
+| AGENT_API_KEY | Entered in Render by the student |
+| REDIS_URL | Render Key Value connection string wired by render.yaml |
+| RATE_LIMIT_PER_MINUTE | render.yaml sets 10 |
+| MONTHLY_BUDGET_USD | render.yaml sets 10.0 |
+| LOG_LEVEL | render.yaml sets INFO |
+| PORT | Supplied by Render |
 
-## Verification after deployment
+## Public verification
 
-The following checks were run against the public URL on 2026-09-29:
+Checks performed on 2026-09-29 against the live service:
 
 ```bash
-curl -i <SERVICE_URL>/health
-curl -i <SERVICE_URL>/ready
-curl -i -X POST <SERVICE_URL>/ask \
-  -H "Content-Type: application/json" \
-  -d '{"question":"Hello"}'
+URL=https://day12-agent-rr5v.onrender.com
+curl -i "$URL/health"
+curl -i "$URL/ready"
+curl -i -X POST "$URL/ask" -H "Content-Type: application/json" -d '{"question":"Hello"}'
 ```
-
-Expected: `/health` returns 200, `/ready` returns 200 with Redis connected, and
-`/ask` without `X-API-Key` returns 401. Run an authenticated ask and a burst of
-requests only after the private API key has been set in the platform dashboard.
-
-### Observed results
 
 ```text
-GET /health -> HTTP 200
-{"status":"ok","version":"1.0.0","environment":"production","uptime_seconds":219.7,"total_requests":7,"checks":{"llm":"mock"},"timestamp":"2026-09-29T14:45:24.528762+00:00"}
-
-GET /ready -> HTTP 200
-{"ready":true}
-
-POST /ask without X-API-Key -> HTTP 401
-{"detail":"Invalid or missing API key. Include header: X-API-Key: <key>"}
+GET /                 -> HTTP 200, Cloud Agent · Day 12 HTML page
+GET /health           -> HTTP 200, {"status":"ok","service":"day12-agent","version":"1.0.0"}
+GET /ready            -> HTTP 200, {"status":"ready","redis":true}
+GET /docs             -> HTTP 200, Swagger UI
+GET /openapi.json     -> HTTP 200
+POST /ask without key -> HTTP 401
 ```
 
-`/ready` returned 200 but did not report `redis: true`, so Redis connectivity
-still needs confirmation in the Render dashboard or from an updated readiness
-response.
+The unauthenticated request confirms the API key gate without exposing a secret. An authenticated request requires the private service key as DEPLOY_API_KEY in the local ignored .env.
 
-### Screenshots
+## Screenshots
 
-After deployment, add genuine captures to `screenshots/`:
-
-- `screenshots/dashboard.png` — the service and connected Redis on the selected platform.
-- `screenshots/health.png` — the deployed `/health` response.
-
-No cloud screenshots are present yet.
+The screenshots/ directory contains genuine captures of the live homepage, public status checks, and Swagger documentation taken on 2026-09-29. The status capture shows /health 200, /ready with redis: true, and unauthenticated /ask 401. Direct Render dashboard and standalone /health captures are still required if the assessor requires the exact filenames screenshots/dashboard.png and screenshots/health.png.
 
 ## Local fallback
 
-If cloud deployment is unavailable, CP5 can use `LOCAL_FALLBACK=true` in the
-local `.env`; the rubric caps this path at 9/15. Start the Compose stack, verify
-`/health`, `/ready`, and unauthenticated `/ask`, then capture a genuine local
-terminal or browser screenshot in `screenshots/`. Record the actual reason for
-using fallback before submitting.
+The cloud deployment is live; local fallback was not used. If needed, the documented fallback uses LOCAL_FALLBACK=true in a local .env and docker compose up -d.
