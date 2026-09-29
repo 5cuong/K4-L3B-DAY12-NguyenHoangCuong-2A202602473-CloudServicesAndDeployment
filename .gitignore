@@ -1,7 +1,13 @@
 # Secrets — KHÔNG BAO GIỜ commit
 .env
+.env.*
+!.env.example
 *.pem
 *.key
+*.p12
+*.pfx
+secrets/
+credentials/
 
 # Python
 __pycache__/
@@ -18,8 +24,22 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Local agent/editor instructions and generated project memory
+.ai/
+.graphifyignore
+/AGENTS.md
+
 # Logs
 *.log
+
+# Build and coverage output
+build/
+dist/
+htmlcov/
+.coverage
+node_modules/
+
+# Submission evidence is intentionally NOT ignored: screenshots/ must be committed.
 
 # Tài liệu nội bộ của giảng viên — không đẩy lên repo phát cho học viên
 solution/

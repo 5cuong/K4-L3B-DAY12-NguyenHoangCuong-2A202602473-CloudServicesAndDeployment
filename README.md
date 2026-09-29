@@ -3,6 +3,10 @@
 Đưa một AI agent từ `localhost:8000` lên một địa chỉ công khai mà người khác
 gọi được, có bảo mật, có giới hạn chi phí, và không sập khi bạn deploy bản mới.
 
+**Live service:** [day12-agent.onrender.com](https://day12-agent.onrender.com) ·
+[trạng thái health](https://day12-agent.onrender.com/health) ·
+[bảng trạng thái](https://day12-agent.onrender.com/)
+
 ---
 
 ## ⚠️ Bài Làm Cá Nhân

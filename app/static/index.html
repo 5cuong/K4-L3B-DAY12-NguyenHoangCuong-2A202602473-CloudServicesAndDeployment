@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Bảng trạng thái trực tiếp cho AI agent của bài lab Cloud Services & Deployment."
+    />
+    <meta name="theme-color" content="#102d2b" />
+    <title>Cloud Agent · Day 12</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/dashboard.js" defer></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Cloud Agent, trang chủ">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36" fill="none">
+              <path d="M7 25.5V10.5L18 5l11 5.5v15L18 31 7 25.5Z" />
+              <path d="m7.5 10.7 10.5 5.5 10.5-5.5M18 16.5V30.5" />
+              <path d="m12 8 11 5.5" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <span class="brand-name">FIELD / CLOUD</span>
+            <span class="brand-caption">K4 · LEVEL 3B · DAY 12</span>
+          </span>
+        </a>
+        <nav class="top-nav" aria-label="Điều hướng chính">
+          <a href="#checks">Trạng thái</a>
+          <a href="/docs">API docs <span aria-hidden="true">↗</span></a>
+          <a class="nav-icon" href="/health" aria-label="Mở health endpoint">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 10h3l2-5 4 10 2-5h3" />
+            </svg>
+          </a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> CLOUD SERVICES & DEPLOYMENT</p>
+            <h1 id="hero-title">Một agent tốt<br />phải <em>sẵn sàng.</em></h1>
+            <p class="hero-intro">
+              API được bảo vệ, chi phí có giới hạn và trạng thái dịch vụ được
+              kiểm tra trực tiếp từ deployment.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-light" href="#checks">
+                Xem kiểm tra trực tiếp <span aria-hidden="true">↓</span>
+              </a>
+              <a class="text-link" href="/docs">Khám phá API <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+
+          <div class="flow-panel" aria-label="Luồng bảo vệ request">
+            <div class="flow-topline">
+              <span class="flow-label">REQUEST PIPELINE</span>
+              <span class="flow-live"><span class="pulse-dot"></span> LIVE</span>
+            </div>
+            <div class="flow-track">
+              <div class="flow-node flow-client">
+                <span class="node-index">01</span>
+                <span class="node-name">Request</span>
+                <span class="node-meta">HTTPS</span>
+              </div>
+              <span class="flow-arrow" aria-hidden="true">→</span>
+              <div class="flow-node flow-gateway">
+                <span class="node-index">02</span>
+                <span class="node-name">Guardrails</span>
+                <span class="node-meta">KEY · RATE · COST</span>
+              </div>
+              <span class="flow-arrow" aria-hidden="true">→</span>
+              <div class="flow-node flow-agent">
+                <span class="node-index">03</span>
+                <span class="node-name">Agent</span>
+                <span class="node-meta">PYTHON 3.12</span>
+              </div>
+            </div>
+            <div class="flow-foot">
+              <span class="redis-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>Conversation state</span>
+              <span class="flow-foot-value">REDIS · SHARED</span>
+            </div>
+          </div>
+          <span class="hero-number" aria-hidden="true">12</span>
+        </section>
+
+        <section class="checks-section" id="checks" aria-labelledby="checks-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">LIVE SYSTEM CHECKS</p>
+              <h2 id="checks-title">Deployment, at a glance.</h2>
+            </div>
+            <div class="check-actions">
+              <span class="checked-at" id="checked-at">Đang kết nối…</span>
+              <button class="refresh-button" id="refresh-checks" type="button">
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M16.5 9a6.5 6.5 0 0 0-11.8-3L3 8m0 0V4.5M3 8h3.5M3.5 11a6.5 6.5 0 0 0 11.8 3L17 12m0 0v3.5M17 12h-3.5" />
+                </svg>
+                Kiểm tra lại
+              </button>
+            </div>
+          </div>
+
+          <div class="probe-grid" aria-live="polite" aria-busy="true" id="probe-grid">
+            <article class="probe-card" id="health-card" data-state="pending">
+              <div class="probe-card-top">
+                <span class="probe-index">01 / LIVENESS</span>
+                <span class="state-chip" id="health-state"><i></i> Đang kiểm tra</span>
+              </div>
+              <div class="endpoint-line"><span class="method method-get">GET</span><code>/health</code></div>
+              <p class="probe-description">Tiến trình đang hoạt động và có thể nhận request.</p>
+              <div class="probe-result" id="health-result">Đang hỏi health endpoint…</div>
+            </article>
+
+            <article class="probe-card" id="ready-card" data-state="pending">
+              <div class="probe-card-top">
+                <span class="probe-index">02 / READINESS</span>
+                <span class="state-chip" id="ready-state"><i></i> Đang kiểm tra</span>
+              </div>
+              <div class="endpoint-line"><span class="method method-get">GET</span><code>/ready</code></div>
+              <p class="probe-description">Readiness endpoint và trạng thái dependency.</p>
+              <div class="probe-result" id="ready-result">Đang hỏi readiness endpoint…</div>
+            </article>
+
+            <article class="probe-card" id="auth-card" data-state="pending">
+              <div class="probe-card-top">
+                <span class="probe-index">03 / API SECURITY</span>
+                <span class="state-chip" id="auth-state"><i></i> Đang kiểm tra</span>
+              </div>
+              <div class="endpoint-line"><span class="method method-post">POST</span><code>/ask</code></div>
+              <p class="probe-description">Request công khai không có API key phải bị chặn.</p>
+              <div class="probe-result" id="auth-result">Đang thử auth guard, không gửi secret…</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="spec-strip" aria-label="Thông tin triển khai">
+          <div class="spec-intro">
+            <span class="spec-mark" aria-hidden="true">↳</span>
+            <div>
+              <p class="section-kicker">BUILT FOR THE CLOUD</p>
+              <p class="spec-title">Từ cấu hình đến vận hành.</p>
+            </div>
+          </div>
+          <div class="spec-item"><span>RUNTIME</span><strong>Python 3.12</strong></div>
+          <div class="spec-item"><span>FRAMEWORK</span><strong>FastAPI</strong></div>
+          <div class="spec-item"><span>STATE</span><strong>Redis-backed</strong></div>
+          <div class="spec-item"><span>PLATFORM</span><strong>Render</strong></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>DAY 12 <b>·</b> CLOUD SERVICES & DEPLOYMENT</span>
+        <span class="footer-status"><i></i><span id="overall-status">Đang kiểm tra endpoint</span></span>
+        <a href="/health">JSON health response <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </body>
+</html>
