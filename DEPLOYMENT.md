@@ -1,101 +1,88 @@
-# Thông Tin Deploy — Checkpoint 5
+# CP5 — Cloud deployment record
 
-> Điền file này sau khi deploy xong. `pytest tests/test_cp5.py` đọc file này
-> để tìm địa chỉ service của bạn và gọi thử.
->
-> **Chỉ ghi TÊN biến môi trường, tuyệt đối không dán giá trị API key vào đây.**
-> Repo này công khai — dán khóa vào là mất khóa.
+## Student and repository
 
-## Thông Tin Học Viên
+| Field | Status |
+|---|---|
+| Name | Verify and enter privately when submitting the assignment |
+| Mã học viên | Do not publish the student ID in this repository; provide it through the course submission channel |
+| Repository | Personal GitHub repository (`origin` is configured locally) |
 
-| Mục | Nội dung |
-|-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-L3B-DAY12-HoVaTen-MSSV-CloudServicesAndDeployment) |
+## Deployment status
 
-## Service
+| Field | Status |
+|---|---|
+| Public URL | Not deployed yet; no public URL is claimed |
+| Platforms requested | Try both Render Free (`render.yaml`) and Railway Free (`railway.toml`); compare health, readiness, and auth checks |
+| Deployment date | Pending deployment |
 
-| Mục | Nội dung |
-|-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+No cloud resource has been created. The deployment CLIs and authenticated
+browser session are unavailable in this workspace. Deploy from each matching
+configuration only after signing in to the existing account, choosing its Free
+plan, and verifying the billing guard below. Never paste an API key or Redis
+credential into this file.
 
-## Biến Môi Trường Đã Set Trên Cloud
+### Zero-cost limits
 
-Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
+- **Render:** choose Free for both the web service and Key Value. Free web
+  services spin down after 15 minutes idle; free Key Value is memory-only and
+  may lose data when restarted. Render grants 750 free instance hours per
+  workspace monthly. If a payment method is attached, bandwidth/build overages
+  can be billed; without one, Render disables services instead.
+- **Railway:** use the Free plan only; do not upgrade to Hobby. Free includes
+  $1 monthly usage credit after any 30-day trial. The Free API limit is 100
+  requests per hour; this is a control-plane API limit, not the agent's
+  `/health` request limit. Stop if the account asks for a paid upgrade or a
+  paid resource.
+- Do not add a payment method or approve paid compute. If one is already attached
+  to Render, remove it or set a spend limit before deployment.
 
-| Biến | Đã set | Ghi chú |
-|------|--------|---------|
-| `PORT` | ✅ | platform tự gán |
-| `AGENT_API_KEY` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
-| `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
-| `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
-| `LOG_LEVEL` | ✅ | INFO |
+## Required environment variables
 
-## Lệnh Kiểm Tra
+| Variable | Required source/status |
+|---|---|
+| `PORT` | Supplied by the hosting platform |
+| `AGENT_API_KEY` | Generate a private key and set it as a platform secret; currently not set on cloud |
+| `REDIS_URL` | Private connection string from the platform Redis service; currently not set on cloud |
+| `RATE_LIMIT_PER_MINUTE` | Set to `10` |
+| `MONTHLY_BUDGET_USD` | Set to `10.0` |
+| `LOG_LEVEL` | Set to `INFO` |
 
-Thay `<URL>` bằng Public URL ở trên:
+## Verification after deployment
+
+After replacing `<SERVICE_URL>` with the actual URL, run these checks and record
+their real output below:
 
 ```bash
-# 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i <URL>/health
-
-# 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i <URL>/ready
-
-# 3. Không có API key — mong đợi 401
-curl -i -X POST <URL>/ask \
+curl -i <SERVICE_URL>/health
+curl -i <SERVICE_URL>/ready
+curl -i -X POST <SERVICE_URL>/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
-
-# 4. Có API key — mong đợi 200 kèm câu trả lời
-curl -i -X POST <URL>/ask \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: $AGENT_API_KEY" \
-  -H "X-User-Id: sv-test" \
-  -d '{"question":"Deploy là gì?"}'
-
-# 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
-for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST <URL>/ask \
-    -H "Content-Type: application/json" \
-    -H "X-API-Key: $AGENT_API_KEY" \
-    -H "X-User-Id: sv-test" \
-    -d '{"question":"test"}'
-done; echo
 ```
 
-## Kết Quả Chạy Thật
+Expected: `/health` returns 200, `/ready` returns 200 with Redis connected, and
+`/ask` without `X-API-Key` returns 401. Run an authenticated ask and a burst of
+requests only after the private API key has been set in the platform dashboard.
 
-Dán output của các lệnh trên vào đây:
+### Observed results
 
-```
-(điền output)
-```
+Pending a real cloud deployment. Do not copy local test results into this section
+as cloud evidence.
 
-## Ảnh Chụp Màn Hình
+### Screenshots
 
-Đặt ảnh trong thư mục `screenshots/`:
+After deployment, add genuine captures to `screenshots/`:
 
-- `screenshots/dashboard.png` — trang quản lý service trên platform
-- `screenshots/health.png` — kết quả gọi `/health` từ trình duyệt hoặc curl
+- `screenshots/dashboard.png` — the service and connected Redis on the selected platform.
+- `screenshots/health.png` — the deployed `/health` response.
 
----
+No cloud screenshots are present yet.
 
-## Nếu Dùng Phương Án Dự Phòng
+## Local fallback
 
-Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng CP5 tối đa 60% điểm:
-
-1. Đặt `LOCAL_FALLBACK=true` trong `.env`
-2. Chạy `docker compose up -d` rồi kiểm tra `docker compose ps`
-3. Chụp màn hình vào `screenshots/`
-4. Chạy `pytest tests/test_cp5.py -v` — bộ test sẽ tự chuyển sang kiểm tra
-   `http://localhost:8000`
-5. Ghi rõ lý do không deploy được vào phần dưới đây:
-
-```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
-```
+If cloud deployment is unavailable, CP5 can use `LOCAL_FALLBACK=true` in the
+local `.env`; the rubric caps this path at 9/15. Start the Compose stack, verify
+`/health`, `/ready`, and unauthenticated `/ask`, then capture a genuine local
+terminal or browser screenshot in `screenshots/`. Record the actual reason for
+using fallback before submitting.

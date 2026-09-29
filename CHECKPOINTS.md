@@ -1,5 +1,14 @@
 # Checkpoints
 
+## Trạng thái thực hiện
+
+- [x] CP0 — học viên báo đã hoàn tất.
+- [x] CP1 — 13 test đạt cùng Python 3.12.
+- [x] CP2 — 14 test đạt; 2 test cần Docker bị skip bên trong test container. Đã build image Python 3.12 thật (62 MB) và chạy Compose thành công.
+- [x] CP3 — 22/22 test đạt trong Python 3.12.
+- [x] CP4 — 19/19 test đạt trong Python 3.12.
+- [ ] CP5 — học viên yêu cầu thử Render Free và Railway Free; chưa tạo cloud service do chưa có CLI đăng nhập hoặc browser session. Không ghi URL/ảnh giả.
+
 Mỗi checkpoint gồm ba phần: sản phẩm phải hoàn thành, kiến thức học viên phải
 giải thích được và cách tự kiểm tra. Hãy commit sau mỗi checkpoint.
 
